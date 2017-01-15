@@ -29,8 +29,13 @@ $(document).ready(function() {
 
     function filterMatchesByLanguage(searchTerm, images) {
         var filteredMatches = images.filter(function(image){
-            var imageTitleInSelectedLanguage = image[language].toLowerCase();
-            return imageTitleInSelectedLanguage.indexOf(searchTerm) > -1;
+            //if title in selected langauge exists, set it variable
+            if(image[language]){
+                var imageTitleInSelectedLanguage = image[language].toLowerCase();
+            }
+            
+            //return only images that have valid title in selected language and contain search string
+            return imageTitleInSelectedLanguage && imageTitleInSelectedLanguage.indexOf(searchTerm) > -1;
         });
 
         currentMatchingResults = filteredMatches.map(function(image){
@@ -72,6 +77,10 @@ $(document).ready(function() {
     function displayMatches() {
         console.log("trying to display images -->", currentMatchingResults);
         
+        //clear images div
+        $('#images').empty();
+        
+        //append new images to images div
         currentMatchingResults.forEach(function(matchingImage){
             //create new image container
             var newImageContainer = document.createElement("div");
@@ -103,9 +112,6 @@ $(document).ready(function() {
                 break;
             case "french":
                 language = "tf"
-                break;
-            case "japanese":
-                language = "tj"
                 break;
             default:
                 language = "tt";
