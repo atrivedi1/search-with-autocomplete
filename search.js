@@ -103,6 +103,7 @@ $(document).ready(function() {
     $("#language-dropdown").change(function(e) {
         var languageSelected = e.target.value;
         
+        //set language
         switch(languageSelected){
             case "english":
                 language = "tt";
@@ -117,13 +118,16 @@ $(document).ready(function() {
                 language = "tt";
                 break;
         }
+
+        //clear out search bar once language is selected
+        $("#search-input").val("");
     });
 
-    $("#search-input").keyup(function(e) {
+    $("#search-input").keyup(_.debounce(function(e) {
         var currentValueInSearchField = e.target.value.toLowerCase();
         
         if(currentValueInSearchField){ 
             searchImagesAndDisplayMatches(currentValueInSearchField)
         }
-    });
+    }, 250));
 });
