@@ -1,39 +1,22 @@
 $(document).ready(function() {
     //assumptions
-    var apiUrl = "https://api.viki.io/v4/search.json?c=b&per_page=5&with_people=true&with_paywall=1&app=100266a&t=1440586215";
+    var apiUrl = "https://api.viki.io/v4/search.json?";
     var appId = "100266a";
     var resultsCap = "5";
     var withPeople = true;
 
-    //cache
-    var cache = {};
-
     //current matching results
     var currentMatchingResults = [];
 
+    //images div 
+    var images = document.getElementById("images");
+
     //helper functions
-    var findMatchingResults = function(searchTerm) {
-        console.log("trying to find matching results")
-        //clear results
-        currentMatchingResults = [];
-
-        //find matching results
-        for(var title in cache) {
-            var titleContainsCharacters = title.indexOf(searchTerm) > -1 ? true : false;
-     
-            if(titleContainsCharacters) {
-                var matchingImageInfo = {}
-                matchingImageInfo[title] = cache[title];
-                currentMatchingResults.push(matchingImageInfo)
-            }
-        }
-    };
-
-    var generateSearchParams = function(searchTerm){
+   function generateSearchParams(searchTerm){
         var params = {
             c: searchTerm,
-            per_page: resultsCap,
-            with_people: withPeople,
+            per_page: "5",
+            with_people: true,
             app: appId,
             t: Date.now()
         };
@@ -41,38 +24,65 @@ $(document).ready(function() {
         return params;
     }
 
-    var getDataFromApi = function(searchParams) {
-        var searchTerm = searchParams.c; 
+    function displayMatchingImagesFromApi(searchParams) {
+        //reset currentMatchingResults
+        currentMatchingResults = [];
 
-        $.get(apiUrl, function(data) {
-            console.log("search performed successfully")
-            
-            data.forEach(function(imageData){
-                var imageTitle = imageData.tt.trim().toLowerCase();
-                var imageUrl = imageData.i;
-                cache[imageTitle] = imageUrl;
-            });
+        //retrieve matching Images and repopulate currentMatchingResults
+        $.ajax({
+            url: apiUrl,
+            type: "get", 
+            data: searchParams,
+            dataType: 'json',
+            success: function (images) {
+                images.forEach(function(image){
+                    var imageData = {};
+                    imageData.titleEn = image.tt;
+                    imageData.url = image.i;
 
-            findMatchingResults(searchTerm);
+                    currentMatchingResults.push(imageData);
+                });
+                
+                displayMatches();
+            },
+            error: function (err) {
+                console.log(err)
+            }
         });
     };
     
-    var searchTitlesAndDisplayResults = function(searchTerm) {
-        //if cache is empty then get data from API;
-        if(Object.keys(cache).length === 0) {
-            var searchParams = generateSearchParams(searchTerm);
-            getDataFromApi(searchParams);
-        }
-        //once cache is created, find matching titles
-        else { findMatchingResults(searchTerm) }
-
-        //display results
-        
+    function searchImagesAndDisplayMatches(searchTerm) {
+        //get matching images from API
+        var searchParams = generateSearchParams(searchTerm);
+        displayMatchingImagesFromApi(searchParams);
     };
+
+    function displayMatches() {
+        console.log("trying to display images -->", currentMatchingResults);
+        currentMatchingResults.forEach(function(matchingImage){
+            //create new image container
+            var newImageContainer = document.createElement("div");
+            newImageContainer.setAttribute("class", "imageContainer");
+            newImageContainer.innerText = matchingImage.titleEn;
+
+            //create new image
+            var newImage = document.createElement("img");
+            newImage.setAttribute("src", matchingImage.url);
+
+            //append new image to image container
+            newImageContainer.appendChild(newImage);
+
+            //append new image container to dom
+            images.appendChild(newImageContainer);
+        });
+    }
 
     //event listeners/handlers
     $("#search-input").keyup(function(e) {
         var currentValueInSearchField = e.target.value.toLowerCase();
-        return searchTitlesAndDisplayResults(currentValueInSearchField)
+        
+        if(currentValueInSearchField){ 
+            searchImagesAndDisplayMatches(currentValueInSearchField)
+        }
     });
 });
