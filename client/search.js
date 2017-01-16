@@ -1,4 +1,8 @@
 $(document).ready(function() {
+    //key dom elements
+    var potentialMatches = document.getElementById("potential-matches")
+    var images = document.getElementById("images-container");
+
     //general assumptions
     var apiUrl = "https://api.viki.io/v4/search.json?";
     var appId = "100266a";
@@ -8,12 +12,8 @@ $(document).ready(function() {
     //language selected (init at 'tt' for english)
     var language = "tt";
 
-    //current matching results
+    //current matching image results
     var currentMatchingResults = [];
-
-    //key dom elements
-    var potentialMatches = document.getElementById("potential-matches")
-    var images = document.getElementById("images-container");
 
     //helper functions
    function generateSearchParams(searchTerm){
@@ -28,9 +28,16 @@ $(document).ready(function() {
         return params;
     }
 
+    function handleSearch(searchTerm) {
+        //get matching images from API
+        var searchParams = generateSearchParams(searchTerm);
+        fetchAndDisplayMatchingImages(searchTerm, searchParams);
+    };
+
     function filterMatchesByLanguage(searchTerm, images) {
+        //filter on images that contain searchTerm AND are in the selected language
         var filteredMatches = images.filter(function(image){
-            //if title in selected langauge exists, set it variable
+            //if title in selected langauge exists, set it to a variable
             if(image[language]){
                 var imageTitleInSelectedLanguage = image[language].toLowerCase();
             }
@@ -39,45 +46,16 @@ $(document).ready(function() {
             return imageTitleInSelectedLanguage && imageTitleInSelectedLanguage.indexOf(searchTerm) > -1;
         });
 
+        //build out current matching results array with cleaned up version of filtered matches
         currentMatchingResults = filteredMatches.map(function(image){
             var imageData = {};
             imageData.title = image[language];
             imageData.url = image.i;
             return imageData;
         })
-
-        console.log("filtered matches -->", currentMatchingResults);
     }
 
-    function displayMatchingImagesFromApi(searchTerm, searchParams) {
-        //reset currentMatchingResults
-        currentMatchingResults = [];
-
-        //retrieve matching Images and repopulate currentMatchingResults
-        $.ajax({
-            url: apiUrl,
-            type: "get", 
-            data: searchParams,
-            dataType: 'json',
-            success: function (images) {
-                filterMatchesByLanguage(searchTerm, images);
-                displayMatches();
-            },
-            error: function (err) {
-                console.log(err)
-            }
-        });
-    };
-    
-    function searchImagesAndDisplayMatches(searchTerm) {
-        //get matching images from API
-        var searchParams = generateSearchParams(searchTerm);
-        displayMatchingImagesFromApi(searchTerm, searchParams);
-    };
-
     function displayMatches() {
-        console.log("trying to display images -->", currentMatchingResults);
-
         //clear datalist
         $('#potential-matches').empty();    
         //clear images div
@@ -116,6 +94,26 @@ $(document).ready(function() {
         });
     }
 
+    function fetchAndDisplayMatchingImages(searchTerm, searchParams) {
+        //reset currentMatchingResults
+        currentMatchingResults = [];
+
+        //retrieve matching Images and repopulate currentMatchingResults
+        $.ajax({
+            url: apiUrl,
+            type: "get", 
+            data: searchParams,
+            dataType: 'json',
+            success: function (images) {
+                filterMatchesByLanguage(searchTerm, images);
+                displayMatches();
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        });
+    };
+    
     //event listeners/handlers
     $("#language-dropdown").change(function(e) {
         var languageSelected = e.target.value;
@@ -141,18 +139,20 @@ $(document).ready(function() {
     });
 
     $("#search-input").bind('input', _.debounce(function(e) {
-        // get keycode of current keypress event
+        //get keycode of current keypress event
         var keyCode = (e.keyCode || e.which);
         
         //get current search value
         var currentValueInSearchField = e.target.value.toLowerCase();
         
+        //ignore arrow strokes
         if(keyCode == 37 || keyCode == 38 || keyCode == 39 || keyCode == 40) {
             return;
         }
 
+        //if there is a search term in the search bar, handle search
         if(currentValueInSearchField){ 
-            searchImagesAndDisplayMatches(currentValueInSearchField)
+            handleSearch(currentValueInSearchField)
         }
     }, 250));
 });

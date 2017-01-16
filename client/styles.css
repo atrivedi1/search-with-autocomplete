@@ -20,9 +20,7 @@ body {
   padding-left: 16px;
 }
 
-
 /* DASHBOARD AND SEARCH CONTROLS */
-
 #dashboard {
    text-align: center;
 }
@@ -58,7 +56,6 @@ body {
 }
 
 /* IMAGES */
-
 .image-data-container {
     margin-bottom: 40px;
 }
