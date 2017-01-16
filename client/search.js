@@ -13,7 +13,7 @@ $(document).ready(function() {
 
     //key dom elements
     var potentialMatches = document.getElementById("potential-matches")
-    var images = document.getElementById("images");
+    var images = document.getElementById("images-container");
 
     //helper functions
    function generateSearchParams(searchTerm){
@@ -81,23 +81,34 @@ $(document).ready(function() {
         //clear datalist
         $('#potential-matches').empty();    
         //clear images div
-        $('#images').empty();
+        $('#images-container').empty();
         
         //append matching image titles to datalist and matching images to images div
         currentMatchingResults.forEach(function(matchingImage){
             //create new option elements based on matches
             $('#potential-matches').append("<option value='" + matchingImage.title + "'>");
 
-            //create new image container
+            //create new image data container
             var newImageContainer = document.createElement("div");
-            newImageContainer.setAttribute("class", "imageContainer");
-            newImageContainer.innerText = matchingImage.title;
+            newImageContainer.setAttribute("class", "image-data-container");
+            
+            //creat new image title div
+            var newImageTitle = document.createElement("div");
+            newImageTitle.setAttribute("class", "image-title-container");
+            
+            var title = document.createElement("div");
+            title.setAttribute("class", "image-title")
+            title.innerText = matchingImage.title;
 
+            newImageTitle.appendChild(title);
+      
             //create new image
             var newImage = document.createElement("img");
+            newImage.setAttribute("class", "image");
             newImage.setAttribute("src", matchingImage.url);
 
-            //append new image to image container
+            //append image title and image to image data container
+            newImageContainer.appendChild(newImageTitle);
             newImageContainer.appendChild(newImage);
 
             //append new image container to dom
@@ -129,7 +140,7 @@ $(document).ready(function() {
         $("#search-input").val("");
     });
 
-    $("#search-input").keyup(_.debounce(function(e) {
+    $("#search-input").bind('input', _.debounce(function(e) {
         // get keycode of current keypress event
         var keyCode = (e.keyCode || e.which);
         
@@ -144,6 +155,4 @@ $(document).ready(function() {
             searchImagesAndDisplayMatches(currentValueInSearchField)
         }
     }, 250));
-
-
 });

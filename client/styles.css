@@ -1,0 +1,82 @@
+
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,500,700,300,100);
+
+/* BODY + HEADER */
+body {
+  font-family: "Roboto", helvetica, arial, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.header-row {
+  margin-top: 10px;
+  height: 140px;
+  background: #161a1d;
+  text-align: center;
+  font-size: 80px;
+  font-weight: 600;
+  color: azure;
+  padding-top: 16px;
+  padding-left: 16px;
+}
+
+
+/* DASHBOARD AND SEARCH CONTROLS */
+
+#dashboard {
+   text-align: center;
+}
+
+#language-dropdown {
+   -webkit-appearance: button;
+   -webkit-border-radius: 2px;
+   -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+   -webkit-padding-end: 20px;
+   -webkit-padding-start: 2px;
+   -webkit-user-select: none;
+   width: 300px;
+   padding: 5px 10px;
+   margin: 20px;
+   border: 1px solid #AAA;
+   background-image: url(http://i62.tinypic.com/15xvbd5.png), -webkit-linear-gradient(#FAFAFA, #F4F4F4 40%, #E5E5E5);
+   background-position: 97% center;
+   background-repeat: no-repeat;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+   color: #555;
+   font-size: inherit;
+}
+
+#search-input {
+    width: 276px;
+    padding: 10px;
+    margin: 5px 5px 60px 5px;
+    border: 3px solid #161a1d;
+    font-size: 16px;
+    color: #555;
+}
+
+/* IMAGES */
+
+.image-data-container {
+    margin-bottom: 40px;
+}
+
+.image-title-container {
+    width: 400px;
+    margin: 5px auto;
+    font-size: 16px;
+    font-weight: 600;
+    font-style: italic;
+}
+
+.image-title {
+    width: 400px;
+    display: inline-block;
+    text-align:left;
+}
+
+.image {
+    width: 400px;
+}

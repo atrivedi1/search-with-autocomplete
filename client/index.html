@@ -20,12 +20,12 @@
 
   <body>
 
-    <header>
-        Search + Autocomplete
+    <header class="header-row">
+        Image Search
     </header>
     
-    <div>
-        <div class="dropdown">
+    <div id="dashboard">
+        <div id="dropdown-container">
           <select id="language-dropdown">
             <option value="english">English</option>
             <option value="spanish">Spanish</option>
@@ -33,13 +33,14 @@
           </select>
         </div>
 
-        <form id="search-bar-form">
+        <div id="form-container">
+          <form id="search-bar-form">
             <input id="search-input" type="text" name="search" list ="potential-matches" placeholder="Search..">
               <datalist id="potential-matches"></datalist>
-        </form>
+          </form>
+        <div>
 
-        <div id="images">
-        </div>
+        <div id="images-container"></div>
     </div>
 
     <script src="search.js"></script>
