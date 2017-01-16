@@ -11,7 +11,8 @@ $(document).ready(function() {
     //current matching results
     var currentMatchingResults = [];
 
-    //images div 
+    //key dom elements
+    var potentialMatches = document.getElementById("potential-matches")
     var images = document.getElementById("images");
 
     //helper functions
@@ -80,8 +81,11 @@ $(document).ready(function() {
         //clear images div
         $('#images').empty();
         
-        //append new images to images div
+        //append matching image titles to datalist and matching images to images div
         currentMatchingResults.forEach(function(matchingImage){
+            //create new option elements based on matches
+            $('#potential-matches').append("<option value='" + matchingImage.title + "'>");
+
             //create new image container
             var newImageContainer = document.createElement("div");
             newImageContainer.setAttribute("class", "imageContainer");
