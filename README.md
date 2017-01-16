@@ -1,4 +1,4 @@
-# autocomplete
+# Autocomplete
 Basic autocomplete functionality, leveraging 3rd party API, built from scratch.
 
 ##Getting Started
