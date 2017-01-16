@@ -77,7 +77,9 @@ $(document).ready(function() {
 
     function displayMatches() {
         console.log("trying to display images -->", currentMatchingResults);
-        
+
+        //clear datalist
+        $('#potential-matches').empty();    
         //clear images div
         $('#images').empty();
         
@@ -128,10 +130,20 @@ $(document).ready(function() {
     });
 
     $("#search-input").keyup(_.debounce(function(e) {
+        // get keycode of current keypress event
+        var keyCode = (e.keyCode || e.which);
+        
+        //get current search value
         var currentValueInSearchField = e.target.value.toLowerCase();
         
+        if(keyCode == 37 || keyCode == 38 || keyCode == 39 || keyCode == 40) {
+            return;
+        }
+
         if(currentValueInSearchField){ 
             searchImagesAndDisplayMatches(currentValueInSearchField)
         }
     }, 250));
+
+
 });
